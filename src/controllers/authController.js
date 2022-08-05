@@ -1,8 +1,6 @@
 import connection from "../dbStrategy/postgres.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { v4 as uuid } from "uuid";
-import joi from "joi";
 
 export async function signUp(request, response) {
   try {
@@ -21,7 +19,8 @@ export async function signUp(request, response) {
     const encryptedPassword = bcrypt.hashSync(user.password, 10);
 
     await connection.query(
-      `INSERT INTO users (name, email, password) VALUES ('${user.name}', '${user.email}', '${encryptedPassword}');`
+      `INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`,
+      [user.name, user.email, encryptedPassword]
     );
 
     response.status(201).send();
@@ -48,7 +47,8 @@ export async function signIn(request, response) {
       const token = jwt.sign({ email: findUser[0].email }, "Gerando token");
 
       await connection.query(
-        `INSERT INTO sessions ("userId", token) VALUES ('${findUser[0].id}', '${token}');`
+        `INSERT INTO sessions ("userId", token) VALUES ($1, $2)`,
+        [findUser[0].id, token]
       );
 
       response.status(200).send(token);
@@ -60,14 +60,4 @@ export async function signIn(request, response) {
   } catch (error) {
     response.status(500).send();
   }
-}
-
-export async function teste(request, response) {
-  const users = await connection.query("SELECT * FROM users");
-  response.send(users.rows);
-}
-
-export async function teste2(request, response) {
-  const sessions = await connection.query("SELECT * FROM sessions");
-  response.send(sessions.rows);
 }

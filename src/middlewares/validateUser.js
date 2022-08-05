@@ -1,20 +1,17 @@
 import connection from "../dbStrategy/postgres.js";
 
-import jwt from "jsonwebtoken";
-
 async function validateUser(request, response, next) {
   const { authorization } = request.headers;
   const token = authorization?.replace("Bearer ", "");
 
-  const usuario = await db.collection("sessoes").findOne({ token });
+  const {rows: user} = await connection.query("SELECT * FROM sessions WHERE token = $1", [token])
 
-  if (!usuario) {
-    response.status(422).send();
-    return;
+  if (user.length === 0){
+    response.status(401).send("Usuário não está logado. Tente novamente!")
+    return
   }
 
-  response.locals.usuario = usuario;
-  response.locals.token = token;
+  response.locals.user = user;
 
   next()
 }
