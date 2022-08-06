@@ -183,7 +183,8 @@ export async function showRanking(request, response) {
       JOIN sessions ON sessions.id = shortly_urls."sessionId"
       JOIN users ON users.id = sessions."userId"
       GROUP BY users.id
-      ORDER BY "visitCount" DESC`
+      ORDER BY "visitCount" DESC
+      LIMIT 10`
     );
 
     response.status(200).send(users);
