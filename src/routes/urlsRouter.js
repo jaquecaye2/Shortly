@@ -12,6 +12,6 @@ router.get("/urls/:id", searchUrl);
 
 router.get("/urls/open/:shortUrl", openUrl);
 
-router.delete("/urls/:id", deleteUrl);
+router.delete("/urls/:id", validateUser, deleteUrl);
 
 export default router;
