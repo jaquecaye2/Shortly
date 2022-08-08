@@ -23,6 +23,11 @@ export async function searchUrl(request, response) {
   try {
     const { id } = request.params;
 
+    if (id === undefined){
+      response.status(404).send("URL não encontrada. Tente novamente!");
+      return;
+    }
+
     const { rows: urlId } = await connection.query(
       'SELECT id, "shortUrl", url FROM shortly_urls WHERE id=$1',
       [id]
