@@ -20,6 +20,4 @@ const connection = new Pool({
   },
 });
 
-console.log("teste deploy")
-
 export default connection;
