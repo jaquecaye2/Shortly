@@ -60,7 +60,7 @@ export async function openUrl(request, response) {
       [shortUrl]
     );
 
-    response.redirect(url[0].url);
+    response.redirect(200, url[0].url);
   } catch (error) {
     response.status(500).send();
   }
